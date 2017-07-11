@@ -1,0 +1,24 @@
+﻿@using MyGitTest123.Models;
+@model  MyGitTest123.Models.MessagesViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div id="messages">
+    @if (Model != null && Model.Messages != null)
+    { 
+        foreach (var item in Model.Messages)
+        {
+            <div>@item.Time
+                @item.fromUser
+                @item.MessageText
+        </div>
+        }
+    }
+</div>
+
+<div id="input">
+    @Html.Partial("_sendMessage", new SendMessageViewModel())
+</div>

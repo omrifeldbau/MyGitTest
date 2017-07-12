@@ -12,8 +12,6 @@ namespace MyGitTest123.Controllers
     
         public ActionResult Index()
         {
-            string Name1 = "omrikon@gmail.com";
-            string Name2 = "golan.idan@gmail.com";
 
             string user = User.Identity.GetUserName();
             using (var db = new MessagingContext())
@@ -70,6 +68,7 @@ namespace MyGitTest123.Controllers
                 db.Messages.Add(msg);
                 db.SaveChanges();
             }
+            ModelState.Clear();
             return View("Index");
         }
     }

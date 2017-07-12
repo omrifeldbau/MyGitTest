@@ -4,17 +4,16 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>What I had to say to you:</h2>
 
 <div id="messages">
     @if (Model != null && Model.Messages != null)
     { 
         foreach (var item in Model.Messages)
         {
-            <div>@item.Time
-                @item.fromUser
+            <div>@item.Time - 
                 @item.MessageText
-        </div>
+           </div>
         }
     }
 </div>

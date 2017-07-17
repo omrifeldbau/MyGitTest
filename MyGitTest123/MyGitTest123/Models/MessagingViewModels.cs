@@ -9,7 +9,8 @@ namespace MyGitTest123.Models
     {
         public string fromUser{ get; set; }
         public DateTime Time { get; set; }
-        public string MessageText { get; set; }       
+        public string MessageText { get; set; }
+        public byte[] Image { get; set; }
     }
 
     public class MessagesViewModel
@@ -22,5 +23,7 @@ namespace MyGitTest123.Models
         public string MessageText { get; set; }
         public string ToUser { get; set; }
         public string FromUser { get; set; }
+
+
     }
 }

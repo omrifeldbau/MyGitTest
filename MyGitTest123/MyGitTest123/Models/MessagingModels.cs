@@ -13,6 +13,8 @@ namespace MyGitTest123.Models
         public DateTime Time { get; set; }
         public string ToUserID { get; set; }
         public string MessageText { get; set; }
+  
+        public byte[] Image { get; set; }
         public bool Seen { get; set; }
 
     }

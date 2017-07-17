@@ -8,4 +8,36 @@
         @Html.TextBoxFor(m => m.MessageText);
         <input type="submit" value="SEND" />
     }
+    @using (Html.BeginForm("FileUpload", "Messaging", FormMethod.Post,
+                                            new { enctype = "multipart/form-data" , id = "formUpload"}))
+    {
+    
+        <input type="file" name="file" id="file" class="inputfile" accept=".jpg,.jpeg,.gif" style="width: 100%;" data-multiple-caption="{count} files selected"  />
+        <label for="file">Choose a file</label>
+    }
 </div>
+
+<script>
+    var inputs = document.querySelectorAll('.inputfile');
+    Array.prototype.forEach.call(inputs, function (input) {
+        var label = input.nextElementSibling,
+            labelVal = label.innerHTML;
+
+        input.addEventListener('change', function (e) {
+            var fileName = '';
+            if (this.files && this.files.length > 1)
+                fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
+            else
+                fileName = e.target.value.split('\\').pop();
+
+            if (fileName)
+                //label.innerHTML = fileName;
+                document.getElementById("formUpload").submit();
+
+            else
+                label.innerHTML = labelVal;
+
+
+        });
+    });
+</script>

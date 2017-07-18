@@ -25,6 +25,12 @@ namespace MyGitTest123.Models
         {
 
         }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            Database.SetInitializer<MessagingContext>(null);
+            base.OnModelCreating(modelBuilder);
+        }
         public DbSet<Message> Messages { get; set; }
     }
 }

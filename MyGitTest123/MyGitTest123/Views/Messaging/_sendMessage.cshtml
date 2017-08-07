@@ -37,7 +37,7 @@
                 //label.innerHTML = fileName;
                 $("#gif").css('visibility', 'visible');
                 $("#btnSend").css('visibility', 'hidden');
-                document.getElementById("formUpload").submit();
+                setInterval(function () { document.getElementById("formUpload").submit(); }, 200);
             }
 
             else {

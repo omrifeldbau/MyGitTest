@@ -5,7 +5,7 @@
     @using (Html.BeginForm("SendMessage", "Messaging", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
     {
         @Html.AntiForgeryToken()
-        @Html.TextBoxFor(m => m.MessageText);
+        @Html.TextAreaFor(m => m.MessageText, new { id = "MessageText" });
         <input type="submit" value="SEND" />
     }
     @using (Html.BeginForm("FileUpload", "Messaging", FormMethod.Post,
@@ -14,10 +14,13 @@
     
         <input type="file" name="file" id="file" class="inputfile" accept=".jpg,.jpeg,.gif" style="width: 100%;" data-multiple-caption="{count} files selected"  />
         <label for="file">Choose a file</label>
+        <img src="@Url.Content("~/Content/run_rabbit_3.gif")" id="gif" style="display: block; margin: 0 auto; width: 100px; visibility: hidden;">
     }
 </div>
 
 <script>
+
+    //$("#MessageText").autogrow();
     var inputs = document.querySelectorAll('.inputfile');
     Array.prototype.forEach.call(inputs, function (input) {
         var label = input.nextElementSibling,
@@ -30,14 +33,24 @@
             else
                 fileName = e.target.value.split('\\').pop();
 
-            if (fileName)
+            if (fileName) {
                 //label.innerHTML = fileName;
+                $("#gif").css('visibility', 'visible')
                 document.getElementById("formUpload").submit();
+            }
 
-            else
+            else {
                 label.innerHTML = labelVal;
+            }
 
 
         });
     });
+
+  
+    $('#formUpload').submit(function (event) {
+        $('#gif').show();
+        return true;
+    });
+
 </script>

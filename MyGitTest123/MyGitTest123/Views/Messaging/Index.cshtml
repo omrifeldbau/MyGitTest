@@ -1,4 +1,5 @@
 ﻿@using MyGitTest123.Models;
+@using System.Text;
 @model  MyGitTest123.Models.MessagesViewModel
 @{
     ViewBag.Title = "Index";
@@ -13,15 +14,15 @@
         {
             if (@item.Image == null)
             {
-                <div>@item.Time - 
+                <div>@TimeZoneInfo.ConvertTimeFromUtc(item.Time, TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time")) - 
                     @item.MessageText
                </div>
             }
             else
             {
                 <div>
-                    @item.Time -
-                    @Html.Raw("<a href='#img' onclick='clickHandler(event)'><img style='max-width:100px' src=\"data:image/jpeg;base64," + Convert.ToBase64String(item.Image) + "\" /></a>")
+                   @TimeZoneInfo.ConvertTimeFromUtc(item.Time, TimeZoneInfo.FindSystemTimeZoneById("Israel Standard Time")) -
+                    @Html.Raw("<a href='#img' onclick='clickHandler(event)'><img style='max-width:100px' src=\"/ContentUser/" + Encoding.ASCII.GetString(item.Image) + "\" /></a>")
             </div>
             }
         }
@@ -39,6 +40,29 @@
 </div>
 
 <script>
+    window.onload = function () {
+        $.ajax({
+            url: "/Messaging/MessagesViewed",
+            type: "POST",
+            data: JSON.stringify({ 'Options': '' }),
+            dataType: "json",
+            traditional: true,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                if (data.result == "ok") {
+                    console.log("messages deleted");
+                    //$(element).closest("form").submit(); //<------------ submit form
+                } else {
+                    console.log("Messages not deleted");
+                }
+            },
+            error: function () {
+                console.log("Error from service");
+            }
+        });
+    }
+   
+   
     function clickHandler(e)
     {
         document.getElementById('targetImage').src = e.srcElement.src;

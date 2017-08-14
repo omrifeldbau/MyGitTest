@@ -7,6 +7,8 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using System.IO;
 
+using System.Text;
+
 namespace MyGitTest123.Controllers
 {
     [Authorize]
@@ -34,35 +36,71 @@ namespace MyGitTest123.Controllers
                 MessagesViewModel messagesVM = new MessagesViewModel();
                 messagesVM.Messages = query.ToList();
 
+    
+                
+                return View(messagesVM);
+
+            }
+        }
+
+        public JsonResult MessagesViewed()
+        {
+            string user = User.Identity.GetUserName();
+            using (var db = new MessagingContext())
+            {
+
                 var updateQuery = db.Messages.Where(f => f.ToUserID == user).ToList();
 
                 updateQuery.ForEach(a => a.Seen = true);
 
-                db.Messages.RemoveRange(db.Messages.Where(f => f.ToUserID == user && f.Image != null));
+                var ImageDeleteQuery = db.Messages.Where(f => f.ToUserID == user && f.Image != null).ToList();
+
+                foreach(var item in ImageDeleteQuery)
+                {
+                    string fullPath = Request.MapPath("~/ContentUser/" + Encoding.ASCII.GetString( item.Image ));
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                }
+
+                //db.Messages.RemoveRange(db.Messages.Where(f => f.ToUserID == user && f.Image != null));
                 db.SaveChanges();
-                
-                return View(messagesVM);
-                //messagesVM.Messages  = query.ToList<>
+
+                return Json(new { result = "ok" });
+               
 
             }
         }
+
         [HttpPost]
         public ActionResult FileUpload(HttpPostedFileBase file)
         {
             if (file != null)
             {
-                byte[] array = null;
-                string pic = System.IO.Path.GetFileName(file.FileName);
+                
 
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    file.InputStream.CopyTo(ms);
-                    array = ms.GetBuffer();
-                }
+                var fileName = Guid.NewGuid().ToString() +
+                      System.IO.Path.GetExtension(file.FileName);
+
+                string contentFolder = Server.MapPath("~/ContentUser");
+
+                string fullFileName = Path.Combine(contentFolder, fileName);
+
+                file.SaveAs(Path.Combine(contentFolder, fileName));
+
+                //string pic = System.IO.Path.GetFileName(file.FileName);
+
+                /* byte[] array = null;
+                 *   using (MemoryStream ms = new MemoryStream())
+                   {
+                       file.InputStream.CopyTo(ms);
+                       array = ms.GetBuffer();
+                   }*/
 
                 Message msg = CreateNewMessage();
 
-                msg.Image = array;
+                msg.Image = Encoding.ASCII.GetBytes(fileName);
 
                 using (var db = new MessagingContext())
                 {
@@ -96,6 +134,7 @@ namespace MyGitTest123.Controllers
             return View("Index");
         }
 
+
         private Message CreateNewMessage()
         {
             string Name1 = "omrikon@gmail.com";
@@ -114,7 +153,7 @@ namespace MyGitTest123.Controllers
             }
 
             msg.Seen = false;
-            msg.Time = DateTime.Now;
+            msg.Time = DateTime.Now.ToUniversalTime();
 
               return msg;
         }
